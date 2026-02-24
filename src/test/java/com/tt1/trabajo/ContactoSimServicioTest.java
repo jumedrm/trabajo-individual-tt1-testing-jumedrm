@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import servicios.ContactoSimServicio;
 import modelo.DatosSolicitud;
+import modelo.DatosSimulation;
 import java.util.HashMap;
 
 class ContactoSimServicioTest {
@@ -13,23 +14,34 @@ class ContactoSimServicioTest {
 
     @BeforeEach
     void setUp() {
-        // arrange
         servicio = new ContactoSimServicio();
     }
-
     @Test
-    void testSolicitarSimulationRetornaDefault() {
+    void testGetEntitiesNoEsNuloYTieneDatos() {
+        // comprobamos que la lista existe y tiene las entidades que inventamos
+        assertNotNull(servicio.getEntities(), "la lista de entidades no debe ser nula");
+        assertFalse(servicio.getEntities().isEmpty(), "la lista de entidades debe tener nombres inventados");
+    } 
+    @Test
+    void testSolicitarSimulationGeneraTokenValido() {
         // act
-        DatosSolicitud ds = new DatosSolicitud(new HashMap<>());
-        int resultado = servicio.solicitarSimulation(ds);
+        int token = servicio.solicitarSimulation(new DatosSolicitud(new HashMap<>()));
         
         // assert
-        assertEquals(-1, resultado, "debe retornar -1 mientras no esté implementado");
+        assertTrue(token >= 0, "el token debe ser un número positivo generado aleatoriamente");
     }
-
     @Test
-    void testGetEntitiesNoEsNulo() {
-        // act & assert
-        assertNotNull(servicio.getEntities(), "la lista de entidades no debe ser nula");
+    void testDescargarDatosNoEsNuloTrasSolicitud() {
+        // arrange
+        int token = servicio.solicitarSimulation(new DatosSolicitud(new HashMap<>()));        
+        
+        // act
+        DatosSimulation resultado = servicio.descargarDatos(token);        
+        
+        // assert
+        assertNotNull(resultado, "el resultado no debería ser nulo tras una solicitud válida");
+        // verificamos que el mensaje del resultado contiene el token (la lógica que pusimos)
+        assertTrue(resultado.getResultado().contains(String.valueOf(token)), 
+            "el resultado debería mencionar el token generado");
     }
 }
