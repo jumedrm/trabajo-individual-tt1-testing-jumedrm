@@ -34,7 +34,7 @@ public class SolicitudController {
     }
     
     @PostMapping("/solicitud")
-    public String handleSolicitud(@RequestParam Map<String, String> formData, Model model) {
+    public String handleSolicitud(@RequestParam Map<String, String> formData, Model model){
     	Map<Integer, Integer> validData = new HashMap<>();
         List<String> errors = new ArrayList<>();
 
